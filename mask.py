@@ -5,10 +5,10 @@ import cv2 as cv2
 import cvlib as cv
 import numpy as np
 
-model = load_model('mask-V1.h5')
+model = load_model('my_model.h5')
 
 
-classes = ["I", "M"]
+classes = ["unmasked", "masked"]
 
 
 capture = cv2.VideoCapture(0)
@@ -32,14 +32,14 @@ while capture.isOpened():
         if (face_crop.shape[0]) < 10 or (face_crop.shape[1]) < 10:
             continue
 
-        face_crop = cv2.resize(face_crop, (150, 150))
+        face_crop = cv2.resize(face_crop, (300, 300))
         face_crop = face_crop.astype(float)/255.0
         face_crop = img_to_array(face_crop)
         face_crop = np.expand_dims(face_crop, axis=0)
 
         conf = model.predict(face_crop)[0]
 
-        if conf < 0.5:
+        if conf > 0.6:
             idx = 0
         else:
             idx = 1
