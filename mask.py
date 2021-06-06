@@ -5,7 +5,7 @@ import cv2 as cv2
 import cvlib as cv
 import numpy as np
 
-model = load_model('my_model.h5')
+model = load_model('mak-V2.h5')
 
 
 classes = ["unmasked", "masked"]
@@ -39,7 +39,7 @@ while capture.isOpened():
 
         conf = model.predict(face_crop)[0]
 
-        if conf > 0.6:
+        if conf > 0.75:
             idx = 0
         else:
             idx = 1
