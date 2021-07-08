@@ -5,10 +5,10 @@ import cv2 as cv2
 import cvlib as cv
 import numpy as np
 
-model = load_model('mak-V2.h5')
+model = load_model('model_V2.1.h5')
 
 
-classes = ["unmasked", "masked"]
+classes = ["Masked", "Unmasked"]
 
 
 capture = cv2.VideoCapture(0)
@@ -37,18 +37,18 @@ while capture.isOpened():
         face_crop = img_to_array(face_crop)
         face_crop = np.expand_dims(face_crop, axis=0)
 
-        conf = model.predict(face_crop)[0]
+        (mask, unmask) = model.predict(face_crop)[0]
 
-        if conf > 0.75:
-            idx = 0
-        else:
+        if unmask > mask:
             idx = 1
+        else:
+            idx = 0
         label = classes[idx]
 
-        cv2.putText(frame, label, (10, 10),
+        cv2.putText(frame, label, (20, 20),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
 
-    cv2.imshow('uwu', frame)
+    cv2.imshow('Frame', frame)
 
     if cv2.waitKey(1) and 0xFF == ord('q'):
         break
