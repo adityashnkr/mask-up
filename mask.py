@@ -5,10 +5,10 @@ import cv2 as cv2
 import cvlib as cv
 import numpy as np
 
-model = load_model('model_V2.1.h5')
+model = load_model('model_V3.h5')
 
 
-classes = ["Masked", "Unmasked"]
+classes = ["Masked", "Incorrectly masked", "Unmasked"]
 
 
 capture = cv2.VideoCapture(0)
@@ -32,17 +32,21 @@ while capture.isOpened():
         if (face_crop.shape[0]) < 10 or (face_crop.shape[1]) < 10:
             continue
 
-        face_crop = cv2.resize(face_crop, (300, 300))
+        face_crop = cv2.resize(face_crop, (128, 128))
         face_crop = face_crop.astype(float)/255.0
         face_crop = img_to_array(face_crop)
         face_crop = np.expand_dims(face_crop, axis=0)
 
-        (mask, unmask) = model.predict(face_crop)[0]
+        conf = model.predict(face_crop)[0]
+        (mask, incorrect, unmask) = conf
+        print((mask, incorrect, unmask))
 
-        if unmask > mask:
+        if mask == max(conf):
+            idx = 0
+        elif incorrect == max(conf):
             idx = 1
         else:
-            idx = 0
+            idx = 2
         label = classes[idx]
 
         cv2.putText(frame, label, (20, 20),
