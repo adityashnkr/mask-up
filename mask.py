@@ -5,7 +5,7 @@ import cv2 as cv2
 import cvlib as cv
 import numpy as np
 
-model = load_model('model_V3.1.h5')
+model = load_model('model_V3.2.h5')
 
 
 classes = ["Masked", "Incorrectly masked", "Unmasked"]
